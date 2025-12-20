@@ -2,119 +2,69 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DATA PESERTA (F4)</title>
+<title>EBTAQ Paging Final</title>
 
 <style>
+/* =================== GLOBAL =================== */
 body {
-    font-family: 'Times New Roman', Times, serif;
-    background-color: #525659;
     margin: 0;
     padding: 20px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: #666;
+    font-family: "Times New Roman", serif;
 }
 
-/* ================= CONTROL PANEL ================= */
-.control-panel {
-    background-color: #fff;
-    padding: 20px 25px;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    margin-bottom: 25px;
-    width: 215mm;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.panel-header {
-    display: flex;
-    gap: 15px;
-}
-.panel-header > div {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-.panel-header input {
-    padding: 7px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#container-shift-checkbox {
-    border: 1px solid #ddd;
-    background: #fafafa;
-    border-radius: 4px;
-    padding: 10px;
-    display: grid;
-    grid-template-rows: repeat(3, auto);
-    grid-auto-flow: column;
-    gap: 6px 20px;
-}
-
-.cb-item {
-    font-family: Arial, sans-serif;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
-.btn-generate {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-}
-
-/* ================= PAGE ================= */
-.page-container {
-    background-color: white;
+.page {
     width: 215mm;
     height: 330mm;
-    padding: 10mm 15mm 15mm 15mm;
+    background: white;
+    margin: 0 auto 20px auto;
+    padding: 12mm 15mm;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
+    position: relative;
     page-break-after: always;
 }
 
-@page { size: 215mm 330mm; margin: 0; }
+@page {
+    size: 215mm 330mm;
+    margin: 0;
+}
 
 @media print {
     body { background: none; padding: 0; }
-    .control-panel, #loading { display: none !important; }
+    .page { margin: 0; }
 }
 
-/* ================= HEADER ================= */
-.page-header {
+/* =================== HEADER =================== */
+.header {
     text-align: center;
     margin-bottom: 10px;
 }
-.page-header .title {
-    font-size: 16pt;
-    font-weight: bold;
-}
-.page-header .periode {
-    font-size: 12pt;
-}
-.page-header .gel-shift {
-    font-size: 11pt;
-    font-weight: bold;
+
+.header h1 {
+    font-size: 18pt;
+    margin: 0;
 }
 
-/* ================= TABLE ================= */
-.split-table-container {
+.header h2 {
+    font-size: 14pt;
+    margin: 3px 0;
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11pt;
+    margin-bottom: 8px;
+}
+
+.info div {
+    width: 48%;
+}
+
+/* =================== TABLE =================== */
+.table-wrap {
     display: flex;
     gap: 10mm;
-    flex: 1;
 }
 
 table {
@@ -122,183 +72,169 @@ table {
     border-collapse: collapse;
     font-size: 11pt;
 }
+
 th, td {
     border: 1px solid #000;
-    padding: 4px 6px;
-}
-th {
-    background: #f0f0f0;
-}
-.col-no {
-    width: 25%;
-    text-align: center;
-    font-weight: bold;
-}
-.col-nama {
-    width: 75%;
+    padding: 4px;
+    height: 28px;
 }
 
-/* ================= FOOTER ================= */
-.footer-legal {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
-}
-.sign-box {
-    width: 250px;
+th {
     text-align: center;
+    background: #eee;
 }
-.sign-space {
-    height: 12mm;
-}
-.sign-name {
-    text-decoration: underline;
+
+.col-no {
+    width: 20%;
+    text-align: center;
     font-weight: bold;
 }
-.sign-hint {
+
+/* =================== FOOTER =================== */
+.footer-label {
+    position: absolute;
+    bottom: 8mm;
+    right: 15mm;
     font-size: 9pt;
-    color: #777;
+    font-style: italic;
+    color: #444;
 }
 </style>
 </head>
 
 <body>
-
-<div class="control-panel">
-    <div class="panel-header">
-        <div>
-            <label>Judul</label>
-            <input id="inp-judul" value="DATA PESERTA">
-        </div>
-        <div>
-            <label>Periode</label>
-            <input id="inp-periode" value="Rojab 1447 H">
-        </div>
-    </div>
-
-    <div>
-        <strong>Gelombang & Shift</strong>
-        <div id="container-shift-checkbox">Memuat data...</div>
-    </div>
-
-    <button class="btn-generate" onclick="generateBatchDocs()">GENERATE DOKUMEN</button>
-</div>
-
-<div id="loading" style="color:white;margin-top:20px;">Memuat data...</div>
-<div id="main-output"></div>
+<div id="output"></div>
 
 <script>
-const SHEET_ID = '1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA';
+/* =================== CONFIG =================== */
+const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
 
-let rawData = [];
-let groupedData = {};
+/* =================== INIT =================== */
+fetch(SHEET_URL)
+    .then(r => r.text())
+    .then(csv => generate(parseCSV(csv)));
 
-async function init() {
-    const res = await fetch(SHEET_URL);
-    const txt = await res.text();
-    processData(txt);
-    document.getElementById('loading').style.display = 'none';
+/* =================== CSV PARSER =================== */
+function parseCSV(text) {
+    const rows = text.trim().split("\n");
+    const headers = rows.shift().split(",").map(h => h.replace(/"/g,""));
+
+    return rows.map(r => {
+        const cols = r.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
+        let obj = {};
+        headers.forEach((h,i)=>{
+            obj[h] = cols[i]?.replace(/"/g,"").trim() || "";
+        });
+        return obj;
+    });
 }
 
-function processData(csvText) {
-    const rows = csvText.trim().split('\n');
-    const headers = rows[0].split(',').map(h => h.replace(/"/g,''));
+/* =================== GENERATOR =================== */
+function generate(data) {
+    const out = document.getElementById("output");
 
-    for (let i = 1; i < rows.length; i++) {
-        const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
-        let p = {};
-        cols.forEach((v, idx) => p[headers[idx]] = v.replace(/"/g,''));
+    /* GROUP PER SHIFT */
+    const groups = {};
+    data.forEach(p=>{
+        const key = `${p.Gelombang}-${p.Shift}`;
+        if(!groups[key]) groups[key]=[];
+        groups[key].push(p);
+    });
 
-        p.INT_NO = parseInt(p['ID Pendaftaran']) || i;
-        rawData.push(p);
+    Object.keys(groups).forEach(key=>{
+        const [gel, shift] = key.split("-");
+        const peserta = groups[key].sort((a,b)=>a.NOMOR-b.NOMOR);
+
+        /* HALAMAN 1 */
+        createPage(
+            peserta.slice(0,10),
+            {header:true, gel, shift, page:1}
+        );
+
+        /* HALAMAN LANJUTAN */
+        let sisa = peserta.slice(10);
+        let pageNum = 2;
+
+        while(sisa.length){
+            createPage(
+                sisa.splice(0,12),
+                {header:false, gel, shift, page:pageNum}
+            );
+            pageNum++;
+        }
+    });
+}
+
+/* =================== PAGE BUILDER =================== */
+function createPage(data, cfg) {
+    const page = document.createElement("div");
+    page.className = "page";
+
+    if(cfg.header){
+        page.innerHTML += `
+        <div class="header">
+            <h1>BLANGKO REKAP PENILAIAN</h1>
+            <h2>Evaluasi Belajar Tahap Akhir Qiroati</h2>
+        </div>
+        <div class="info">
+            <div>Gelombang : ${cfg.gel}</div>
+            <div>Shift : ${cfg.shift}</div>
+        </div>
+        `;
     }
 
-    groupedData = {};
-    rawData.forEach(p => {
-        const key = `${p['Gelombang']}-${p['Shift']}`;
-        if (!groupedData[key]) groupedData[key] = [];
-        groupedData[key].push(p);
-    });
+    const rowsPerCol = cfg.header ? 5 : 6;
 
-    renderShiftCheckboxes();
-}
+    const left = data.slice(0, rowsPerCol);
+    const right = data.slice(rowsPerCol, rowsPerCol*2);
 
-function renderShiftCheckboxes() {
-    const c = document.getElementById('container-shift-checkbox');
-    c.innerHTML = '';
-    Object.keys(groupedData).sort().forEach(k => {
-        const [g,s] = k.split('-');
-        const lbl = document.createElement('label');
-        lbl.className = 'cb-item';
-        lbl.innerHTML = `<input type="checkbox" value="${k}"> Gel ${g} - Shift ${s}`;
-        c.appendChild(lbl);
-    });
-}
-
-function generateBatchDocs() {
-    const out = document.getElementById('main-output');
-    out.innerHTML = '';
-
-    const judul = inp-judul.value;
-    const periode = inp-periode.value;
-
-    document.querySelectorAll('#container-shift-checkbox input:checked')
-        .forEach(cb => {
-            const key = cb.value;
-            const [gel, shift] = key.split('-');
-            const data = groupedData[key].sort((a,b)=>a.INT_NO-b.INT_NO);
-
-            const page = createPage(data, {judul, periode, gel, shift});
-            out.appendChild(page);
-        });
-}
-
-function createPage(data, cfg) {
-    const div = document.createElement('div');
-    div.className = 'page-container';
-
-    const mid = Math.ceil(data.length/2);
-    const makeRows = arr => arr.map(p =>
-        `<tr>
-            <td class="col-no">${p['ID Pendaftaran']}</td>
-            <td class="col-nama">${(p['Nama Lengkap (Sesuai Akta)']||'').toUpperCase()}</td>
-        </tr>`
-    ).join('');
-
-    div.innerHTML = `
-        <div class="page-header">
-            <div class="title">${cfg.judul}</div>
-            <div class="periode">${cfg.periode}</div>
-            <div class="gel-shift">Gel ${cfg.gel} - Shift ${cfg.shift}</div>
-        </div>
-
-        <div class="split-table-container">
-            <table>
-                <thead><tr><th>NO</th><th>NAMA</th></tr></thead>
-                <tbody>${makeRows(data.slice(0,mid))}</tbody>
-            </table>
-
-            <table>
-                <thead><tr><th>NO</th><th>NAMA</th></tr></thead>
-                <tbody>${makeRows(data.slice(mid))}</tbody>
-            </table>
-        </div>
-
-        <div class="footer-legal">
-            <div class="sign-box">
-                <div>Penguji,</div>
-                <div class="sign-space"></div>
-                <div class="sign-name">_______________________</div>
-                <div class="sign-hint">(tanda tangan & nama)</div>
-            </div>
-        </div>
+    page.innerHTML += `
+    <div class="table-wrap">
+        ${makeTable(left, rowsPerCol)}
+        ${makeTable(right, rowsPerCol)}
+    </div>
     `;
-    return div;
+
+    if(!cfg.header){
+        page.innerHTML += `
+        <div class="footer-label">
+            Gel ${cfg.gel} Shift ${cfg.shift} – Halaman ${cfg.page}
+        </div>`;
+    }
+
+    document.getElementById("output").appendChild(page);
 }
 
-init();
-</script>
+/* =================== TABLE MAKER =================== */
+function makeTable(arr, max) {
+    let rows = "";
+    arr.forEach(p=>{
+        rows += `
+        <tr>
+            <td class="col-no">${p.NOMOR}</td>
+            <td></td>
+        </tr>`;
+    });
+    for(let i=arr.length;i<max;i++){
+        rows += `
+        <tr>
+            <td class="col-no">&nbsp;</td>
+            <td></td>
+        </tr>`;
+    }
 
+    return `
+    <table>
+        <thead>
+            <tr>
+                <th class="col-no">NO</th>
+                <th>NILAI</th>
+            </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+    </table>`;
+}
+</script>
 </body>
 </html>
