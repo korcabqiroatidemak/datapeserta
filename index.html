@@ -2,239 +2,325 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>EBTAQ Paging Final</title>
+<title>CODE X – Cetak Kartu Peserta EBTAQ</title>
 
 <style>
-/* =================== GLOBAL =================== */
-body {
-    margin: 0;
-    padding: 20px 0;
-    background: #666;
+/* ================================================= */
+/* GLOBAL & PRINT SETUP (F4)                         */
+/* ================================================= */
+@page { size: 215mm 330mm; margin: 0; }
+
+body{
     font-family: "Times New Roman", serif;
+    background:#525659;
+    margin:0;
+    padding:20px 0;
 }
 
-.page {
-    width: 215mm;
-    height: 330mm;
-    background: white;
-    margin: 0 auto 20px auto;
-    padding: 12mm 15mm;
-    box-sizing: border-box;
-    position: relative;
-    page-break-after: always;
+/* ================================================= */
+/* CONTROL PANEL                                     */
+/* ================================================= */
+.control-panel{
+    background:#fff;
+    width:215mm;
+    margin:auto;
+    padding:20px 25px;
+    border-radius:8px;
+    box-shadow:0 4px 15px rgba(0,0,0,.3);
+    margin-bottom:25px;
 }
 
-@page {
-    size: 215mm 330mm;
-    margin: 0;
+.control-panel h3{
+    margin:0 0 10px 0;
+    color:#007bff;
 }
 
-@media print {
-    body { background: none; padding: 0; }
-    .page { margin: 0; }
+.row{
+    display:flex;
+    gap:15px;
+    margin-bottom:15px;
 }
 
-/* =================== HEADER =================== */
-.header {
-    text-align: center;
-    margin-bottom: 10px;
+.control-group{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:5px;
 }
 
-.header h1 {
-    font-size: 18pt;
-    margin: 0;
+label{
+    font-size:12px;
+    font-weight:bold;
+    font-family:Arial,sans-serif;
 }
 
-.header h2 {
-    font-size: 14pt;
-    margin: 3px 0;
+input,select{
+    padding:7px 10px;
+    font-size:14px;
 }
 
-.info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11pt;
-    margin-bottom: 8px;
+#shift-container{
+    border:1px solid #ddd;
+    padding:10px;
+    display:grid;
+    grid-template-rows:repeat(5,auto);
+    grid-auto-flow:column;
+    gap:8px 25px;
+    overflow-x:auto;
 }
 
-.info div {
-    width: 48%;
+.cb-item{
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    white-space:nowrap;
 }
 
-/* =================== TABLE =================== */
-.table-wrap {
-    display: flex;
-    gap: 10mm;
+.btn-generate{
+    width:100%;
+    padding:12px;
+    font-weight:bold;
+    background:#28a745;
+    color:#fff;
+    border:none;
+    cursor:pointer;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 11pt;
+/* ================================================= */
+/* PAGE CONTAINER                                    */
+/* ================================================= */
+.page{
+    width:215mm;
+    height:330mm;
+    background:#fff;
+    margin:auto;
+    box-sizing:border-box;
+    padding:10mm 15mm;
+    page-break-after:always;
 }
 
-th, td {
-    border: 1px solid #000;
-    padding: 4px;
-    height: 28px;
+/* ================================================= */
+/* HEADER (HALAMAN PERTAMA)                           */
+/* ================================================= */
+.kop{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+.logo{
+    position:absolute;
+    left:0;
+    width:70px;
+}
+.logo img{ width:100%; }
+
+.kop-text{
+    text-align:center;
+    padding:0 70px;
+}
+.kop-text .t1{font-size:12pt;font-weight:bold;}
+.kop-text .t2{font-size:22pt;font-weight:900;}
+.kop-text .t3{font-size:12pt;font-weight:bold;}
+
+.double-line{
+    border-top:4px solid #000;
+    border-bottom:1px solid #000;
+    height:2px;
+    margin:8px 0 10px;
 }
 
-th {
-    text-align: center;
-    background: #eee;
+.info{
+    display:flex;
+    justify-content:space-between;
+    font-weight:bold;
+    font-size:11pt;
+    margin-bottom:8px;
 }
 
-.col-no {
-    width: 20%;
-    text-align: center;
-    font-weight: bold;
+/* ================================================= */
+/* GRID KARTU                                        */
+/* ================================================= */
+.grid-10{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:repeat(5,1fr);
+    gap:10px;
+}
+.grid-12{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:repeat(6,1fr);
+    gap:10px;
 }
 
-/* =================== FOOTER =================== */
-.footer-label {
-    position: absolute;
-    bottom: 8mm;
-    right: 15mm;
-    font-size: 9pt;
-    font-style: italic;
-    color: #444;
+.kartu{
+    border:1px solid #000;
+    padding:5px;
+    display:flex;
+    font-size:10pt;
+    line-height:1.2;
+}
+
+.foto{
+    width:3cm;
+    height:4cm;
+    margin-right:8px;
+    border:1px solid #ccc;
+}
+.foto img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.info-kartu{
+    flex:1;
+}
+
+.row-data{
+    display:flex;
+    margin-bottom:3px;
+}
+.label{
+    width:60px;
+    font-weight:bold;
+}
+.sep{ width:10px; text-align:center; }
+
+@media print{
+    body{background:none;padding:0;}
+    .control-panel{display:none;}
 }
 </style>
 </head>
 
 <body>
+
+<div class="control-panel">
+    <h3>Panel Kontrol – CODE X</h3>
+    <div class="row">
+        <div class="control-group">
+            <label>Judul</label>
+            <input id="judul" value="Cetak Kartu Peserta EBTAQ">
+        </div>
+        <div class="control-group">
+            <label>Bulan</label>
+            <input id="bulan">
+        </div>
+        <div class="control-group">
+            <label>Tahun</label>
+            <input id="tahun">
+        </div>
+    </div>
+
+    <label>Gelombang & Shift</label>
+    <div id="shift-container">Memuat data…</div>
+
+    <button class="btn-generate" onclick="generate()">GENERATE</button>
+</div>
+
 <div id="output"></div>
 
 <script>
-/* =================== CONFIG =================== */
 const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
+const LOGO = "QIRAATI.png";
 
-/* =================== INIT =================== */
-fetch(SHEET_URL)
-    .then(r => r.text())
-    .then(csv => generate(parseCSV(csv)));
+let rawData=[], grouped={};
 
-/* =================== CSV PARSER =================== */
-function parseCSV(text) {
-    const rows = text.trim().split("\n");
-    const headers = rows.shift().split(",").map(h => h.replace(/"/g,""));
+function getFoto(url){
+    const m=url?.match(/id=([a-zA-Z0-9_-]+)/);
+    return m?`https://lh3.googleusercontent.com/d/${m[1]}`:'';
+}
 
-    return rows.map(r => {
-        const cols = r.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g);
-        let obj = {};
-        headers.forEach((h,i)=>{
-            obj[h] = cols[i]?.replace(/"/g,"").trim() || "";
-        });
-        return obj;
+fetch(SHEET_URL).then(r=>r.text()).then(process);
+
+function process(csv){
+    const rows=csv.trim().split('\n');
+    const headers=rows[0].split(',').map(h=>h.replace(/"/g,''));
+    for(let i=1;i<rows.length;i++){
+        const cols=rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)||[];
+        let p={};
+        cols.forEach((v,j)=>p[headers[j]]=v.replace(/"/g,''));
+        p.INT_NO=parseInt(p.Nomor)||0;
+        p.DISP_NO=String(p.Nomor||'').padStart(3,'0');
+        const key=`${p.Gelombang}-${p.Shift}`;
+        if(!grouped[key]) grouped[key]=[];
+        grouped[key].push(p);
+    }
+    renderShift();
+}
+
+function renderShift(){
+    const c=document.getElementById('shift-container');
+    c.innerHTML='';
+    Object.keys(grouped).sort().forEach(k=>{
+        const [g,s]=k.split('-');
+        const l=document.createElement('label');
+        l.className='cb-item';
+        l.innerHTML=`<input type="checkbox" value="${k}"> Gel ${g} Shift ${s} (${grouped[k].length})`;
+        c.appendChild(l);
     });
 }
 
-/* =================== GENERATOR =================== */
-function generate(data) {
-    const out = document.getElementById("output");
+function generate(){
+    const out=document.getElementById('output');
+    out.innerHTML='';
+    const checked=[...document.querySelectorAll('#shift-container input:checked')];
+    if(!checked.length){alert('Pilih shift!');return;}
 
-    /* GROUP PER SHIFT */
-    const groups = {};
-    data.forEach(p=>{
-        const key = `${p.Gelombang}-${p.Shift}`;
-        if(!groups[key]) groups[key]=[];
-        groups[key].push(p);
-    });
+    checked.forEach(cb=>{
+        const data=grouped[cb.value].sort((a,b)=>a.INT_NO-b.INT_NO);
+        let idx=0;
 
-    Object.keys(groups).forEach(key=>{
-        const [gel, shift] = key.split("-");
-        const peserta = groups[key].sort((a,b)=>a.NOMOR-b.NOMOR);
-
-        /* HALAMAN 1 */
-        createPage(
-            peserta.slice(0,10),
-            {header:true, gel, shift, page:1}
-        );
+        /* HALAMAN PERTAMA */
+        const page1=document.createElement('div');
+        page1.className='page';
+        page1.innerHTML=`
+        <div class="kop">
+            <div class="logo"><img src="${LOGO}"></div>
+            <div class="kop-text">
+                <div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div>
+                <div class="t2">METODE QIRAATI</div>
+                <div class="t3">CABANG DEMAK</div>
+            </div>
+        </div>
+        <div class="double-line"></div>
+        <div class="info">
+            <div>${document.getElementById('bulan').value} ${document.getElementById('tahun').value}</div>
+            <div>Gel ${cb.value}</div>
+        </div>
+        <div class="grid-10"></div>`;
+        const g10=page1.querySelector('.grid-10');
+        for(let i=0;i<10 && idx<data.length;i++,idx++) g10.appendChild(card(data[idx]));
+        out.appendChild(page1);
 
         /* HALAMAN LANJUTAN */
-        let sisa = peserta.slice(10);
-        let pageNum = 2;
-
-        while(sisa.length){
-            createPage(
-                sisa.splice(0,12),
-                {header:false, gel, shift, page:pageNum}
-            );
-            pageNum++;
+        while(idx<data.length){
+            const p=document.createElement('div');
+            p.className='page';
+            const g=document.createElement('div');
+            g.className='grid-12';
+            for(let i=0;i<12 && idx<data.length;i++,idx++) g.appendChild(card(data[idx]));
+            p.appendChild(g);
+            out.appendChild(p);
         }
     });
 }
 
-/* =================== PAGE BUILDER =================== */
-function createPage(data, cfg) {
-    const page = document.createElement("div");
-    page.className = "page";
-
-    if(cfg.header){
-        page.innerHTML += `
-        <div class="header">
-            <h1>BLANGKO REKAP PENILAIAN</h1>
-            <h2>Evaluasi Belajar Tahap Akhir Qiroati</h2>
-        </div>
-        <div class="info">
-            <div>Gelombang : ${cfg.gel}</div>
-            <div>Shift : ${cfg.shift}</div>
-        </div>
-        `;
-    }
-
-    const rowsPerCol = cfg.header ? 5 : 6;
-
-    const left = data.slice(0, rowsPerCol);
-    const right = data.slice(rowsPerCol, rowsPerCol*2);
-
-    page.innerHTML += `
-    <div class="table-wrap">
-        ${makeTable(left, rowsPerCol)}
-        ${makeTable(right, rowsPerCol)}
-    </div>
-    `;
-
-    if(!cfg.header){
-        page.innerHTML += `
-        <div class="footer-label">
-            Gel ${cfg.gel} Shift ${cfg.shift} – Halaman ${cfg.page}
-        </div>`;
-    }
-
-    document.getElementById("output").appendChild(page);
-}
-
-/* =================== TABLE MAKER =================== */
-function makeTable(arr, max) {
-    let rows = "";
-    arr.forEach(p=>{
-        rows += `
-        <tr>
-            <td class="col-no">${p.NOMOR}</td>
-            <td></td>
-        </tr>`;
-    });
-    for(let i=arr.length;i<max;i++){
-        rows += `
-        <tr>
-            <td class="col-no">&nbsp;</td>
-            <td></td>
-        </tr>`;
-    }
-
-    return `
-    <table>
-        <thead>
-            <tr>
-                <th class="col-no">NO</th>
-                <th>NILAI</th>
-            </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-    </table>`;
+function card(d){
+    const c=document.createElement('div');
+    c.className='kartu';
+    c.innerHTML=`
+    <div class="foto"><img src="${getFoto(d['Kirim Pas Foto Ukuran PostCard'])}"></div>
+    <div class="info-kartu">
+        <div class="row-data"><span class="label">Nomor</span><span class="sep">:</span>${d.DISP_NO}</div>
+        <div class="row-data"><span class="label">Nama</span><span class="sep">:</span>${(d['Nama Lengkap (Sesuai Akta)']||'').toUpperCase()}</div>
+        <div class="row-data"><span class="label">Lemb.</span><span class="sep">:</span>${(d['Asal Lembaga / TPQ']||'').toUpperCase()}</div>
+    </div>`;
+    return c;
 }
 </script>
+
 </body>
 </html>
