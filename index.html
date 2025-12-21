@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Data Peserta EBTAQ - Final Mix</title>
+    <title>Cetak Data Peserta EBTAQ - Final Fix Logo</title>
     <style>
         /* ================================================= */
         /* 1. LAYOUT CONTROL PANEL (GRID STYLE)              */
@@ -65,8 +65,28 @@
         /* ================================================= */
         /* 3. KOMPONEN BLANGKO (KOP & GRID)                  */
         /* ================================================= */
-        .kop { display: flex; align-items: center; justify-content: center; position: relative; height: 80px; }
-        .logo { position: absolute; left: 0; width: 75px; }
+        /* Container Kop (Induk) */
+        .kop { 
+            display: flex; align-items: center; justify-content: center; 
+            position: relative; /* PENTING: Menjadi acuan posisi absolute anak */
+            height: 80px; 
+            overflow: hidden; /* Mencegah anak keluar container */
+        }
+
+        /* --- PERBAIKAN POSISI LOGO DI SINI --- */
+        .logo { 
+            position: absolute; 
+            left: 0; 
+            top: 50%;               /* Turun 50% dari atas */
+            transform: translateY(-50%); /* Tarik naik 50% dari tingginya sendiri agar pas di tengah */
+            width: 75px; 
+            z-index: 10;            /* Pastikan di atas elemen lain */
+            display: flex; align-items: center; /* Vertikal align untuk gambar di dalamnya */
+        }
+        /* Pastikan gambar tidak meledak */
+        .logo img { width: 100%; height: auto; max-height: 80px; }
+        /* ------------------------------------- */
+
         .kop-text { text-align: center; flex: 1; padding: 0 75px; }
         .kop-text .t1 { font-size: 12pt; font-weight: bold; }
         .kop-text .t2 { font-size: 22pt; font-weight: 900; margin: 2px 0; }
