@@ -15,7 +15,7 @@
         }
 
         /* ================================================= */
-        /* 2. PANEL KONTROL (SIMPEL & PERSISTENT)            */
+        /* 2. PANEL KONTROL                                 */
         /* ================================================= */
         .control-panel {
             background: #fff; width: 215mm; margin: auto;
@@ -57,7 +57,6 @@
         .double-line { border-top: 4px solid #000; border-bottom: 1px solid #000; height: 2px; margin: 5px 0 10px; }
 
         .doc-title { text-align: center; font-weight: bold; font-size: 14pt; }
-        /* Periode format Capitalize Each Word */
         .doc-sub { text-align: center; font-size: 12pt; margin-bottom: 10px; text-transform: capitalize; font-weight: bold; }
         .info-top { display: flex; justify-content: space-between; font-size: 11pt; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 15px; }
 
@@ -65,7 +64,7 @@
 
         .kartu {
             border: 1px solid #000; 
-            padding: 2mm 8px; /* Padding vertikal 2mm sesuai diskusi */
+            padding: 2mm 8px;
             display: flex; align-items: flex-start;
             height: 4.5cm; box-sizing: border-box;
             overflow: hidden;
@@ -143,13 +142,11 @@ const LOGO = "QIRAATI.png";
 let grouped = {};
 
 window.onload = async () => {
-    // Sugesti Tahun Otomatis
     try {
         const h = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { year: 'numeric' }).format(new Date());
         document.getElementById('inp-tahun').value = h.match(/\d+/)[0] + " H";
     } catch(e) {}
 
-    // Load History
     if(localStorage.getItem('ebtaq_judul')) document.getElementById('inp-judul').value = localStorage.getItem('ebtaq_judul');
     if(localStorage.getItem('ebtaq_bulan')) document.getElementById('inp-bulan').value = localStorage.getItem('ebtaq_bulan');
     if(localStorage.getItem('ebtaq_tahun')) document.getElementById('inp-tahun').value = localStorage.getItem('ebtaq_tahun');
@@ -215,7 +212,7 @@ function generate() {
 
         while (idx < data.length) {
             const isFirst = (idx === 0);
-            const limit = isFirst ? 10 : 12; // Kembali ke 2x6 agar tidak sesak
+            const limit = isFirst ? 10 : 12; 
             const page = document.createElement('div');
             page.className = 'page';
 
@@ -243,12 +240,25 @@ function generate() {
 function createCard(d) {
     const c = document.createElement('div');
     c.className = 'kartu';
-    const rawF = d['Kirim Pas Foto Ukuran PostCard'] || '';
-    const idF = rawF.includes('id=') ? rawF.match(/id=([a-zA-Z0-9_-]+)/)[1] : null;
-    const fSrc = idF ? `https://lh3.googleusercontent.com/d/$${idF}` : '';
+    
+    // Mengambil data dari kolom foto (Header dipaksa uppercase sesuai fungsi processCSV)
+    const rawF = d['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
+    let idF = '';
+
+    // Logika ekstraksi ID Google Drive yang lebih akurat
+    if (rawF.includes('id=')) {
+        idF = rawF.split('id=')[1].split('&')[0];
+    } else if (rawF.includes('/d/')) {
+        idF = rawF.split('/d/')[1].split('/')[0];
+    }
+
+    // Menggunakan endpoint 'uc' untuk menampilkan gambar langsung
+    const fSrc = idF ? `https://docs.google.com/uc?export=view&id=${idF}` : '';
 
     c.innerHTML = `
-        <div class="foto-box">${fSrc ? `<img src="${fSrc}">` : `<small style="color:#999">3x4</small>`}</div>
+        <div class="foto-box">
+            ${idF ? `<img src="${fSrc}" alt="Foto">` : `<small style="color:#999">3x4</small>`}
+        </div>
         <div class="info-kartu">
             <div class="row-data"><span class="label-data">NOMOR</span><span class="sep">:</span><span class="val">${d['NOMOR'] || '-'}</span></div>
             <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val-nama">${d['NAMA LENGKAP (SESUAI AKTA)'] || '-'}</span></div>
