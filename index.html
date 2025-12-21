@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>DATA PESERTA EBTAQ - MASTER FINAL</title>
+    <title>DATA PESERTA EBTAQ - PROTOTIPE FINAL</title>
     <style>
         /* ================================================= */
         /* 1. PAGE SETUP (F4: 215 x 330mm)                   */
@@ -15,22 +15,17 @@
         }
 
         /* ================================================= */
-        /* 2. PANEL KONTROL (VERSI SIMPEL ANDA)              */
+        /* 2. PANEL KONTROL (SIMPEL & PERSISTENT)            */
         /* ================================================= */
         .control-panel {
             background: #fff; width: 215mm; margin: auto;
             padding: 20px 25px; border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,.3); margin-bottom: 25px;
         }
-        .control-panel h3 { margin: 0 0 10px; color: #007bff; font-family: Arial; }
         .row { display: flex; gap: 15px; margin-bottom: 15px; }
         .control-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
         label { font-size: 12px; font-weight: bold; font-family: Arial, sans-serif; }
-        
-        input, select { 
-            padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; 
-            border-radius: 4px; font-family: Arial, sans-serif;
-        }
+        input, select { padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
 
         #shift-container {
             border: 1px solid #ddd; padding: 10px;
@@ -39,11 +34,7 @@
             background: #fafafa; margin-bottom: 15px;
         }
         .cb-item { font-size: 13px; font-family: Arial; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 5px; }
-        .btn-generate {
-            width: 100%; padding: 12px; font-weight: bold;
-            background: #28a745; color: #fff; border: none;
-            cursor: pointer; border-radius: 4px; text-transform: uppercase;
-        }
+        .btn-generate { width: 100%; padding: 12px; font-weight: bold; background: #28a745; color: #fff; border: none; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
 
         /* ================================================= */
         /* 3. LAYOUT CETAK                                   */
@@ -69,14 +60,12 @@
         .doc-sub { text-align: center; font-size: 12pt; margin-bottom: 10px; }
         .info-top { display: flex; justify-content: space-between; font-size: 11pt; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 15px; }
 
-        .grid-kartu {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 12px; flex: 1; align-content: start;
-        }
+        .grid-kartu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; flex: 1; align-content: start; }
 
-        /* KARTU DESIGN (TINGGI 4.5 CM AGAR LEGA) */
+        /* KARTU DESIGN (REVISI PADDING & LABEL) */
         .kartu {
-            border: 1px solid #000; padding: 10px;
+            border: 1px solid #000; 
+            padding: 2mm 8px; /* PADDING ATAS BAWAH 2mm */
             display: flex; align-items: flex-start;
             height: 4.5cm; box-sizing: border-box;
             overflow: hidden;
@@ -90,17 +79,19 @@
         }
         .foto-box img { width: 100%; height: 100%; object-fit: cover; }
 
-        .info-kartu { flex: 1; font-size: 10pt; line-height: 1.3; }
-        .row-data { display: flex; margin-bottom: 3px; }
-        .label-data { width: 60px; font-weight: bold; flex-shrink: 0; }
-        .sep { width: 10px; text-align: center; }
+        .info-kartu { flex: 1; font-size: 9.5pt; line-height: 1.25; }
+        .row-data { display: flex; margin-bottom: 2px; }
+        
+        /* PENGECILAN JARAK LABEL KE ISIAN */
+        .label-data { width: 48px; font-weight: bold; flex-shrink: 0; font-size: 9pt; }
+        .sep { width: 6px; text-align: center; }
         .val { flex: 1; }
-        .val-nama { font-weight: bold; text-transform: uppercase; font-size: 9.5pt; }
+        
+        /* PENGATURAN NONE UNTUK LEMBAGA */
+        .val-lembaga { text-transform: none; font-weight: normal; }
+        .val-nama { font-weight: bold; text-transform: uppercase; font-size: 9pt; }
 
-        .footer {
-            position: absolute; bottom: 10mm; left: 15mm; right: 15mm;
-            text-align: center; font-size: 9pt; font-style: italic; color: #777;
-        }
+        .footer { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; text-align: center; font-size: 9pt; font-style: italic; color: #777; }
 
         @media print {
             body { background: none; padding: 0; }
@@ -137,7 +128,7 @@
         </div>
         <div class="control-group">
             <label>Tahun</label>
-            <input id="inp-tahun" oninput="saveHistory()" placeholder="Otomatis Terdeteksi">
+            <input id="inp-tahun" oninput="saveHistory()" placeholder="1446 H">
         </div>
     </div>
     <label>Gelombang & Shift</label>
@@ -153,20 +144,12 @@ const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tq
 const LOGO = "QIRAATI.png";
 let grouped = {};
 
-// 1. Inisialisasi: Load History & Deteksi Tahun
 window.onload = async () => {
-    // Sugesti Tahun Hijriah
-    try {
-        const h = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { year: 'numeric' }).format(new Date());
-        document.getElementById('inp-tahun').value = h.match(/\d+/)[0] + " H";
-    } catch(e) {}
-
-    // Read History dari LocalStorage
+    // Load History
     if(localStorage.getItem('ebtaq_judul')) document.getElementById('inp-judul').value = localStorage.getItem('ebtaq_judul');
     if(localStorage.getItem('ebtaq_bulan')) document.getElementById('inp-bulan').value = localStorage.getItem('ebtaq_bulan');
     if(localStorage.getItem('ebtaq_tahun')) document.getElementById('inp-tahun').value = localStorage.getItem('ebtaq_tahun');
 
-    // Fetch Data
     const res = await fetch(SHEET_URL);
     const txt = await res.text();
     processCSV(txt);
@@ -213,7 +196,7 @@ function processCSV(csv) {
 
 function generate() {
     const selected = document.querySelectorAll('input[name="chk-shift"]:checked');
-    if (selected.length === 0) return alert("Peringatan: Mohon pilih minimal satu Gelombang/Shift!");
+    if (selected.length === 0) return alert("Pilih minimal satu Gelombang!");
 
     const out = document.getElementById('output');
     const judul = document.getElementById('inp-judul').value;
@@ -228,30 +211,18 @@ function generate() {
 
         while (idx < data.length) {
             const isFirst = (idx === 0);
-            const limit = isFirst ? 10 : 12;
+            const limit = isFirst ? 10 : 14; // HALAMAN KEDUA DST MENGGUNAKAN 2x7 = 14
             const page = document.createElement('div');
             page.className = 'page';
 
             let header = "";
             if (isFirst) {
-                header = `
-                <div class="kop">
-                    <div class="logo"><img src="${LOGO}" onerror="this.style.display='none'"></div>
-                    <div class="kop-text">
-                        <div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div>
-                        <div class="t2">METODE QIRAATI</div>
-                        <div class="t3">CABANG DEMAK</div>
-                    </div>
-                </div>
-                <div class="double-line"></div>
-                <div class="doc-title">${judul}</div>
-                <div class="doc-sub">PERIODE ${bulan} ${tahun}</div>
-                <div class="info-top"><div>GELOMBANG: ${gel}</div><div>SHIFT: ${sft}</div></div>`;
+                header = `<div class="kop"><div class="logo"><img src="${LOGO}"></div><div class="kop-text"><div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div><div class="t2">METODE QIRAATI</div><div class="t3">CABANG DEMAK</div></div></div><div class="double-line"></div><div class="doc-title">${judul}</div><div class="doc-sub">PERIODE ${bulan} ${tahun}</div><div class="info-top"><div>GELOMBANG: ${gel}</div><div>SHIFT: ${sft}</div></div>`;
             }
 
             const grid = document.createElement('div');
             grid.className = 'grid-kartu';
-            grid.style.gridTemplateRows = isFirst ? "repeat(5, 1fr)" : "repeat(6, 1fr)";
+            grid.style.gridTemplateRows = isFirst ? "repeat(5, 1fr)" : "repeat(7, 1fr)";
 
             for (let i = 0; i < limit && idx < data.length; i++, idx++) {
                 grid.appendChild(createCard(data[idx]));
@@ -259,7 +230,7 @@ function generate() {
 
             page.innerHTML = header;
             page.appendChild(grid);
-            page.innerHTML += `<div class="footer">${judul} | Gel ${gel} SFT ${sft} | Hal. ${Math.ceil(idx/12)}</div>`;
+            page.innerHTML += `<div class="footer">${judul} | Gel ${gel} SFT ${sft} | Hal. ${Math.ceil(idx/14)}</div>`;
             out.appendChild(page);
         }
     });
@@ -269,15 +240,15 @@ function createCard(d) {
     const c = document.createElement('div');
     c.className = 'kartu';
     const rawF = d['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
-    const id = rawF.includes('id=') ? rawF.match(/id=([a-zA-Z0-9_-]+)/)[1] : null;
-    const fSrc = id ? `https://lh3.googleusercontent.com/d/${id}` : '';
+    const idF = rawF.includes('id=') ? rawF.match(/id=([a-zA-Z0-9_-]+)/)[1] : null;
+    const fSrc = idF ? `https://lh3.googleusercontent.com/d/${idF}` : '';
 
     c.innerHTML = `
         <div class="foto-box">${fSrc ? `<img src="${fSrc}">` : `<small style="color:#999">3x4</small>`}</div>
         <div class="info-kartu">
-            <div class="row-data"><span class="label-data">ID</span><span class="sep">:</span><span class="val">${d['ID PENDAFTARAN'] || d['NOMOR'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">NOMOR</span><span class="sep">:</span><span class="val">${d['NOMOR'] || '-'}</span></div>
             <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val-nama">${d['NAMA LENGKAP (SESUAI AKTA)'] || '-'}</span></div>
-            <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val">${toTitleCase(d['ASAL LEMBAGA / TPQ'])}</span></div>
+            <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val val-lembaga">${d['ASAL LEMBAGA / TPQ'] || '-'}</span></div>
             <div class="row-data"><span class="label-data">TTL</span><span class="sep">:</span><span class="val">${toTitleCase(d['TEMPAT LAHIR'])}, ${formatTanggal(d['TANGGAL LAHIR'])}</span></div>
             <div class="row-data"><span class="label-data">JK</span><span class="sep">:</span><span class="val">${d['JENIS KELAMIN'] || '-'}</span></div>
             <div class="row-data"><span class="label-data">BIN</span><span class="sep">:</span><span class="val">${toTitleCase(d['NAMA AYAH'])}</span></div>
