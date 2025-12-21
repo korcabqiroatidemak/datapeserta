@@ -2,239 +2,305 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>DATA PESERTA EBTAQ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cetak Data Peserta EBTAQ - Final Mix</title>
     <style>
-        @page { size: 215mm 330mm; margin: 0; }
+        /* ================================================= */
+        /* 1. LAYOUT CONTROL PANEL (GRID STYLE)              */
+        /* ================================================= */
         body {
-            font-family: "Times New Roman", serif;
-            background: #525659;
+            font-family: 'Times New Roman', Times, serif;
+            background-color: #525659;
             margin: 0; padding: 20px 0;
+            display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh;
         }
 
-        /* ================= CONTROL PANEL ================= */
         .control-panel {
-            background: #fff; width: 215mm; margin: auto;
-            padding: 20px 25px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,.3); margin-bottom: 25px;
-        }
-        .row { display: flex; gap: 15px; margin-bottom: 15px; }
-        .control-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
-        label { font-size: 12px; font-weight: bold; font-family: Arial, sans-serif; }
-        input { padding: 7px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
-
-        #shift-container {
-            border: 1px solid #ddd; padding: 10px;
-            display: grid; grid-template-rows: repeat(3, auto);
-            grid-auto-flow: column; gap: 8px 25px; overflow-x: auto;
-            background: #fafafa;
-        }
-        .cb-item { font-size: 13px; font-family: Arial; white-space: nowrap; cursor: pointer; }
-        .btn-generate {
-            width: 100%; padding: 12px; font-weight: bold;
-            background: #28a745; color: #fff; border: none;
-            cursor: pointer; border-radius: 4px;
+            background-color: #fff; padding: 25px 30px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-bottom: 25px;
+            width: 215mm; box-sizing: border-box;
+            border-top: 5px solid #007bff;
+            display: flex; flex-direction: column; gap: 20px;
         }
 
-        /* ================= PAGE LAYOUT ================= */
+        .row-header { display: flex; gap: 15px; width: 100%; align-items: flex-end; border-bottom: 1px dashed #ddd; padding-bottom: 15px; }
+        .col-judul { flex: 5; }
+        .col-bulan { flex: 2; }
+        .col-tahun { flex: 1; min-width: 80px; }
+
+        .cp-grid-section { display: flex; gap: 20px; align-items: stretch; }
+        .cp-col { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+        .cp-col h4 { margin: 0 0 5px 0; font-size: 14px; font-family: Arial; color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 3px; }
+
+        #container-shift-checkbox {
+            flex: 1; border: 1px solid #e0e0e0; background: #fafafa; border-radius: 4px; padding: 10px;
+            display: grid; grid-template-rows: repeat(5, auto); grid-auto-flow: column; gap: 8px 25px;
+            overflow-x: auto; overflow-y: hidden;
+        }
+        .cb-item { display: flex; align-items: center; gap: 5px; font-size: 13px; font-family: Arial; white-space: nowrap; cursor: pointer; }
+        
+        .btn-generate { 
+            background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; 
+            cursor: pointer; font-weight: bold; width: 100%; font-size: 15px; text-transform: uppercase;
+        }
+
+        /* ================================================= */
+        /* 2. PAGE SETUP (F4: 215 x 330mm)                   */
+        /* ================================================= */
         .page {
             width: 215mm; height: 330mm; background: #fff;
-            margin: 0 auto 10px auto; box-sizing: border-box;
-            padding: 10mm 15mm 15mm 15mm; /* Margin bawah 1.5cm */
+            margin: 0 auto 15px auto; box-sizing: border-box;
+            padding: 10mm 15mm 15mm 15mm; 
             page-break-after: always; position: relative;
             display: flex; flex-direction: column;
         }
-
-        /* ================= HEADER ================= */
-        .kop { display: flex; align-items: center; justify-content: center; position: relative; }
-        .logo { position: absolute; left: 0; width: 70px; }
-        .kop-text { text-align: center; padding: 0 70px; }
-        .kop-text .t1 { font-size: 12pt; font-weight: bold; }
-        .kop-text .t2 { font-size: 22pt; font-weight: 900; }
-        .kop-text .t3 { font-size: 12pt; font-weight: bold; }
-        .double-line { border-top: 4px solid #000; border-bottom: 1px solid #000; height: 2px; margin: 8px 0 10px; }
-        .doc-title { text-align: center; font-weight: bold; font-size: 14pt; text-transform: uppercase; }
-        .doc-sub { text-align: center; font-size: 12pt; margin-bottom: 10px; font-weight: bold; }
-        .info { display: flex; justify-content: space-between; font-size: 11pt; font-weight: bold; margin-bottom: 10px; border-bottom: 1px solid #000; padding-bottom: 5px; }
-
-        /* ================= GRID KARTU ================= */
-        .grid-kartu {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            flex: 1; /* Biar grid mengambil ruang yang ada */
-        }
-
-        .kartu {
-            border: 1px solid #000; padding: 8px;
-            display: flex; font-size: 9.5pt; height: fit-content;
-        }
-        .foto {
-            width: 3cm; height: 4cm; margin-right: 10px;
-            border: 1px dashed #999; display: flex;
-            align-items: center; justify-content: center;
-            font-size: 8pt; color: #999; text-align: center;
-            flex-shrink: 0;
-        }
-        .info-kartu { flex: 1; overflow: hidden; }
-        .row-data { display: flex; margin-bottom: 3px; line-height: 1.2; }
-        .label-data { width: 60px; font-weight: bold; flex-shrink: 0; }
-        .sep { width: 10px; text-align: center; flex-shrink: 0; }
-        .val { flex: 1; word-wrap: break-word; }
-
-        .footer {
-            position: absolute; bottom: 10mm; left: 15mm; right: 15mm;
-            text-align: center; font-size: 9pt; font-style: italic; color: #666;
-        }
-
+        @page { size: 215mm 330mm; margin: 0; }
         @media print {
             body { background: none; padding: 0; }
-            .control-panel { display: none; }
-            .page { margin: 0; box-shadow: none; }
+            .control-panel, #loading, .page-label { display: none !important; }
+            .page { margin: 0; box-shadow: none; border: none; }
         }
+
+        /* ================================================= */
+        /* 3. KOMPONEN BLANGKO (KOP & GRID)                  */
+        /* ================================================= */
+        .kop { display: flex; align-items: center; justify-content: center; position: relative; height: 80px; }
+        .logo { position: absolute; left: 0; width: 75px; }
+        .kop-text { text-align: center; flex: 1; padding: 0 75px; }
+        .kop-text .t1 { font-size: 12pt; font-weight: bold; }
+        .kop-text .t2 { font-size: 22pt; font-weight: 900; margin: 2px 0; }
+        .kop-text .t3 { font-size: 12pt; font-weight: bold; }
+        .double-line { border-top: 4px solid #000; border-bottom: 1px solid #000; height: 2px; margin: 5px 0 10px; }
+
+        .doc-title { text-align: center; font-weight: bold; font-size: 14pt; text-transform: uppercase; }
+        .doc-sub { text-align: center; font-size: 12pt; margin-bottom: 10px; font-weight: bold; }
+        .info-top { display: flex; justify-content: space-between; font-size: 11pt; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 15px; }
+
+        .grid-kartu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; align-content: start; }
+
+        /* KARTU DESIGN (FOTO 3x4) */
+        .kartu { border: 1px solid #000; padding: 8px; display: flex; align-items: flex-start; height: 4.2cm; box-sizing: border-box; }
+        .foto-box { 
+            width: 3cm; height: 4cm; border: 1px solid #000; flex-shrink: 0; margin-right: 12px;
+            background: #eee; display: flex; align-items: center; justify-content: center; overflow: hidden;
+        }
+        .foto-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .info-kartu { flex: 1; font-size: 9.5pt; line-height: 1.25; overflow: hidden; }
+        .row-data { display: flex; margin-bottom: 2px; }
+        .label-data { width: 55px; font-weight: bold; flex-shrink: 0; }
+        .sep { width: 10px; text-align: center; }
+        .val { flex: 1; text-transform: uppercase; }
+
+        .footer-page { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; text-align: center; font-size: 9pt; font-style: italic; color: #666; }
+        .page-label { display: inline-block; background: #333; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-family: Arial; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-<div class="control-panel">
-    <h3>Panel Kontrol – DATA PESERTA</h3>
-    <div class="row">
-        <div class="control-group">
-            <label>Judul Dokumen</label>
-            <input id="inp-judul" value="DATA PESERTA EBTAQ">
+    <div class="control-panel">
+        <div class="row-header">
+            <div class="col-judul">
+                <label>Judul Dokumen</label>
+                <input id="inp-judul" value="DATA PESERTA EBTAQ">
+            </div>
+            <div class="col-bulan">
+                <label>Bulan Hijriyah</label>
+                <input id="inp-bulan" placeholder="Misal: Rojab">
+            </div>
+            <div class="col-tahun">
+                <label>Tahun Hijriyah</label>
+                <input id="inp-tahun" style="text-align: center;">
+            </div>
         </div>
-        <div class="control-group">
-            <label>Bulan (Hijriyah)</label>
-            <input id="inp-bulan" placeholder="Contoh: Rojab">
-        </div>
-        <div class="control-group">
-            <label>Tahun</label>
-            <input id="inp-tahun" placeholder="Contoh: 1446 H">
-        </div>
-    </div>
-    <label>Pilih Gelombang & Shift (Daftar Peserta)</label>
-    <div id="shift-container">Memuat data dari Google Sheets…</div>
-    <button class="btn-generate" onclick="generate()" style="margin-top:15px;">GENERATE DATA PESERTA</button>
-</div>
 
-<div id="output"></div>
-
-<script>
-const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
-const LOGO = "QIRAATI.png";
-let grouped = {};
-
-// Ambil Data Awal
-fetch(SHEET_URL).then(r => r.text()).then(csv => {
-    const rows = csv.trim().split('\n');
-    const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim().toUpperCase());
-    
-    for (let i = 1; i < rows.length; i++) {
-        const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
-        let p = {};
-        cols.forEach((v, j) => {
-            const val = v.replace(/"/g, '').trim();
-            p[headers[j]] = val;
-        });
-
-        // Normalisasi data penting
-        p.GEL = p['GELOMBANG'] || '-';
-        p.SFT = p['SHIFT'] || '-';
-        p.NAMA = p['NAMA LENGKAP (SESUAI AKTA)'] || '';
-        
-        const key = `${p.GEL}-${p.SFT}`;
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(p);
-    }
-
-    const c = document.getElementById('shift-container');
-    c.innerHTML = '';
-    Object.keys(grouped).sort().forEach(k => {
-        const l = document.createElement('label');
-        l.className = 'cb-item';
-        l.innerHTML = `<input type="checkbox" value="${k}"> Gel ${k.replace('-', ' Shift ')} (${grouped[k].length})`;
-        c.appendChild(l);
-    });
-});
-
-function generate() {
-    const out = document.getElementById('output');
-    const judul = document.getElementById('inp-judul').value;
-    const bulan = document.getElementById('inp-bulan').value;
-    const tahun = document.getElementById('inp-tahun').value;
-    
-    out.innerHTML = '';
-
-    const selected = document.querySelectorAll('#shift-container input:checked');
-    if(selected.length === 0) return alert("Pilih minimal satu Gelombang!");
-
-    selected.forEach(cb => {
-        const data = grouped[cb.value];
-        const [gel, sft] = cb.value.split('-');
-        let idx = 0;
-
-        // Loop per halaman
-        while (idx < data.length) {
-            const isFirstPage = (idx === 0);
-            const limit = isFirstPage ? 10 : 12; // Halaman 1 cuma muat 10 karena ada Kop
-            
-            const page = document.createElement('div');
-            page.className = 'page';
-            
-            let htmlHeader = '';
-            if (isFirstPage) {
-                htmlHeader = `
-                <div class="kop">
-                    <div class="logo"><img src="${LOGO}" onerror="this.style.display='none'"></div>
-                    <div class="kop-text">
-                        <div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div>
-                        <div class="t2">METODE QIRAATI</div>
-                        <div class="t3">CABANG DEMAK</div>
-                    </div>
+        <div class="cp-grid-section">
+            <div class="cp-col">
+                <h4>1. Keterangan</h4>
+                <div style="padding: 10px; background: #f8f9fa; border: 1px solid #eee; font-size: 13px; line-height: 1.5;">
+                    Sistem akan otomatis mengatur:<br>
+                    • Hal 1: <b>$2 \times 5$ (10 Kartu)</b><br>
+                    • Hal 2+: <b>$2 \times 6$ (12 Kartu)</b><br>
+                    • Penomoran halaman global.
                 </div>
-                <div class="double-line"></div>
-                <div class="doc-title">${judul}</div>
-                <div class="doc-sub">PERIODE ${bulan} ${tahun}</div>
-                <div class="info">
-                    <div>GELOMBANG: ${gel}</div>
-                    <div>SHIFT: ${sft}</div>
-                </div>`;
-            }
+            </div>
+            <div class="cp-col">
+                <h4>
+                    <span>2. Pilih Sesi (Gelombang-Shift)</span>
+                    <label style="margin:0; font-size:11px; cursor: pointer; color:#007bff;">
+                        <input type="checkbox" onchange="toggleAll(this)"> Pilih Semua
+                    </label>
+                </h4>
+                <div id="container-shift-checkbox">
+                    <div style="padding: 10px; color: #999; font-size: 12px; text-align: center;">Memuat Data...</div>
+                </div>
+            </div>
+        </div>
+        <button class="btn-generate" onclick="generate()">GENERATE DOKUMEN</button>
+    </div>
 
-            const grid = document.createElement('div');
-            grid.className = 'grid-kartu';
-            
-            // Isi Grid dengan Kartu
-            for (let i = 0; i < limit && idx < data.length; i++, idx++) {
-                grid.appendChild(createCard(data[idx]));
-            }
+    <div id="loading" style="display:none; color: white; margin-top: 20px;"><h3>Sedang Memproses...</h3></div>
+    <div id="output"></div>
 
-            const footer = `<div class="footer">Periode ${bulan} ${tahun} | Gel ${gel} | Shift ${sft} | Hal. ${Math.ceil(idx/12)}</div>`;
-            
-            page.innerHTML = htmlHeader;
-            page.appendChild(grid);
-            page.innerHTML += footer;
-            out.appendChild(page);
+    <script>
+        const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
+        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
+        const LOGO = "QIRAATI.png"; 
+
+        let grouped = {};
+
+        async function init() {
+            try {
+                const h = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { year: 'numeric' }).format(new Date());
+                document.getElementById('inp-tahun').value = h.match(/\d+/)[0] + " H";
+            } catch(e) {}
+
+            try {
+                const res = await fetch(SHEET_URL);
+                const txt = await res.text();
+                processData(txt);
+            } catch (err) { alert("Gagal Load: " + err); }
         }
-    });
-}
 
-function createCard(d) {
-    const c = document.createElement('div');
-    c.className = 'kartu';
-    c.innerHTML = `
-        <div class="foto">FOTO<br>3 x 4</div>
-        <div class="info-kartu">
-            <div class="row-data"><span class="label-data">Nama</span><span class="sep">:</span><span class="val"><b>${d.NAMA.toUpperCase()}</b></span></div>
-            <div class="row-data"><span class="label-data">TTL</span><span class="sep">:</span><span class="val">${d['TEMPAT LAHIR'] || ''}, ${d['TANGGAL LAHIR'] || ''}</span></div>
-            <div class="row-data"><span class="label-data">Ayah</span><span class="sep">:</span><span class="val">${(d['NAMA AYAH'] || '').toUpperCase()}</span></div>
-            <div class="row-data"><span class="label-data">Ibu</span><span class="sep">:</span><span class="val">${(d['NAMA IBU'] || '').toUpperCase()}</span></div>
-            <div class="row-data"><span class="label-data">Lembaga</span><span class="sep">:</span><span class="val">${d['NAMA LEMBAGA'] || ''}</span></div>
-            <div class="row-data"><span class="label-data">Alamat</span><span class="sep">:</span><span class="val" style="font-size:8pt">${d['ALAMAT LENGKAP'] || ''}</span></div>
-        </div>`;
-    return c;
-}
-</script>
+        function processData(csv) {
+            const rows = csv.trim().split('\n');
+            const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim().toUpperCase());
+            
+            for (let i = 1; i < rows.length; i++) {
+                const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+                let p = {};
+                cols.forEach((v, j) => p[headers[j]] = v.replace(/"/g, '').trim());
 
+                p.NAMA = p['NAMA LENGKAP (SESUAI AKTA)'] || '';
+                p.LEMBAGA = p['ASAL LEMBAGA / TPQ'] || '-';
+                p.AYAH = p['NAMA AYAH'] || '-';
+                p.IBU = p['NAMA IBU'] || '-';
+                p.GEL = p['GELOMBANG'] || '-';
+                p.SFT = p['SHIFT'] || '-';
+                p.FOTO = p['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
+                p.INT_NO = parseInt(p['NOMOR']) || i;
+
+                const key = `${p.GEL}-${p.SFT}`;
+                if (!grouped[key]) grouped[key] = [];
+                grouped[key].push(p);
+            }
+
+            const container = document.getElementById('container-shift-checkbox');
+            container.innerHTML = '';
+            Object.keys(grouped).sort().forEach(k => {
+                const div = document.createElement('label');
+                div.className = 'cb-item';
+                div.innerHTML = `<input type="checkbox" name="chk-shift" value="${k}"> Gel ${k.replace('-', ' SFT ')} (${grouped[k].length})`;
+                container.appendChild(div);
+            });
+        }
+
+        function toggleAll(src) {
+            document.getElementsByName('chk-shift').forEach(cb => cb.checked = src.checked);
+        }
+
+        function getDirectUrl(url) {
+            if (!url || !url.includes('id=')) return url;
+            const id = url.match(/id=([a-zA-Z0-9_-]+)/);
+            return id ? `https://lh3.googleusercontent.com/d/${id[1]}` : url;
+        }
+
+        function generate() {
+            const out = document.getElementById('output');
+            const judul = document.getElementById('inp-judul').value;
+            const bulan = document.getElementById('inp-bulan').value;
+            const tahun = document.getElementById('inp-tahun').value;
+            out.innerHTML = '';
+
+            const selected = document.querySelectorAll('input[name="chk-shift"]:checked');
+            if (selected.length === 0) return alert("Pilih Sesi!");
+
+            // Pre-calculate Global Total Pages
+            let grandTotal = 0;
+            selected.forEach(cb => {
+                const count = grouped[cb.value].length;
+                grandTotal += 1; // Halaman 1 (10 kartu)
+                if (count > 10) grandTotal += Math.ceil((count - 10) / 12);
+            });
+
+            let globalPage = 1;
+
+            selected.forEach(cb => {
+                const data = grouped[cb.value].sort((a,b) => a.INT_NO - b.INT_NO);
+                const [gel, sft] = cb.value.split('-');
+                let idx = 0;
+
+                while (idx < data.length) {
+                    const isFirst = (idx === 0);
+                    const limit = isFirst ? 10 : 12;
+
+                    const page = document.createElement('div');
+                    page.className = 'page';
+
+                    let header = '';
+                    if (isFirst) {
+                        header = `
+                        <div class="kop">
+                            <div class="logo"><img src="${LOGO}" onerror="this.style.display='none'"></div>
+                            <div class="kop-text">
+                                <div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div>
+                                <div class="t2">METODE QIRAATI</div>
+                                <div class="t3">CABANG DEMAK</div>
+                            </div>
+                        </div>
+                        <div class="double-line"></div>
+                        <div class="doc-title">${judul}</div>
+                        <div class="doc-sub">PERIODE ${bulan} ${tahun}</div>
+                        <div class="info-top">
+                            <div>GELOMBANG: ${gel}</div>
+                            <div>SHIFT: ${sft}</div>
+                        </div>`;
+                    }
+
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-kartu';
+
+                    for (let i = 0; i < limit && idx < data.length; i++, idx++) {
+                        grid.appendChild(createCard(data[idx]));
+                    }
+
+                    const pageLabel = document.createElement('div');
+                    pageLabel.className = 'page-label';
+                    pageLabel.innerHTML = `SESI: GEL ${gel} SFT ${sft} | HALAMAN ${globalPage} DARI ${grandTotal}`;
+
+                    page.innerHTML = header;
+                    page.appendChild(grid);
+                    page.innerHTML += `<div class="footer-page">${judul} | ${bulan} ${tahun} | Hal. ${globalPage} dari ${grandTotal}</div>`;
+                    
+                    out.appendChild(pageLabel);
+                    out.appendChild(page);
+                    globalPage++;
+                }
+            });
+        }
+
+        function createCard(d) {
+            const c = document.createElement('div');
+            c.className = 'kartu';
+            const fUrl = getDirectUrl(d.FOTO);
+            const fotoHTML = fUrl.startsWith('http') ? `<img src="${fUrl}">` : `<small style="color:#999">FOTO 3x4</small>`;
+
+            c.innerHTML = `
+                <div class="foto-box">${fotoHTML}</div>
+                <div class="info-kartu">
+                    <div class="row-data"><span class="label-data">ID</span><span class="sep">:</span><span class="val">${d['ID PENDAFTARAN'] || '-'}</span></div>
+                    <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val"><b>${d.NAMA}</b></span></div>
+                    <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val">${d.LEMBAGA}</span></div>
+                    <div class="row-data"><span class="label-data">TTL</span><span class="sep">:</span><span class="val">${d['TEMPAT LAHIR']}, ${d['TANGGAL LAHIR']}</span></div>
+                    <div class="row-data"><span class="label-data">JK</span><span class="sep">:</span><span class="val">${d['JENIS KELAMIN']}</span></div>
+                    <div class="row-data"><span class="label-data">BIN</span><span class="sep">:</span><span class="val">${d.AYAH}</span></div>
+                    <div class="row-data"><span class="label-data">BINTI</span><span class="sep">:</span><span class="val">${d.IBU}</span></div>
+                </div>`;
+            return c;
+        }
+
+        init();
+    </script>
 </body>
 </html>
