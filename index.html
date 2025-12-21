@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>DATA PESERTA EBTAQ - REVISI 2x6</title>
+    <title>DATA PESERTA EBTAQ - REVISI FINAL</title>
     <style>
         /* ================================================= */
         /* 1. PAGE SETUP (F4: 215 x 330mm)                   */
@@ -241,23 +241,19 @@ function createCard(d) {
     const c = document.createElement('div');
     c.className = 'kartu';
     
-    // Mengambil data dari kolom foto (Header dipaksa uppercase sesuai fungsi processCSV)
+    // Header yang dicari harus sama dengan yang di processCSV (UPPERCASE)
     const rawF = d['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
-    let idF = '';
-
-    // Logika ekstraksi ID Google Drive yang lebih akurat
-    if (rawF.includes('id=')) {
-        idF = rawF.split('id=')[1].split('&')[0];
-    } else if (rawF.includes('/d/')) {
-        idF = rawF.split('/d/')[1].split('/')[0];
+    const matchId = rawF.match(/id=([a-zA-Z0-9_-]+)/);
+    
+    // Menggunakan teknik dari skrip kedua Anda: tanpa tanda dollar ($) sebelum kurawal
+    let fSrc = "";
+    if (matchId && matchId[1]) {
+        fSrc = `https://lh3.googleusercontent.com/d/${matchId[1]}`;
     }
-
-    // Menggunakan endpoint 'uc' untuk menampilkan gambar langsung
-    const fSrc = idF ? `https://docs.google.com/uc?export=view&id=${idF}` : '';
 
     c.innerHTML = `
         <div class="foto-box">
-            ${idF ? `<img src="${fSrc}" alt="Foto">` : `<small style="color:#999">3x4</small>`}
+            ${fSrc ? `<img src="${fSrc}" onerror="this.style.display='none'; this.parentNode.innerText='NO FOTO'">` : `<small style="color:#999">3x4</small>`}
         </div>
         <div class="info-kartu">
             <div class="row-data"><span class="label-data">NOMOR</span><span class="sep">:</span><span class="val">${d['NOMOR'] || '-'}</span></div>
