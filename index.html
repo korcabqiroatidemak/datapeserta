@@ -2,51 +2,47 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cetak Data Peserta EBTAQ - Final Fix Logo</title>
+    <title>DATA PESERTA EBTAQ - FIX LAYOUT</title>
     <style>
         /* ================================================= */
-        /* 1. LAYOUT CONTROL PANEL (GRID STYLE)              */
+        /* 1. PAGE SETUP (F4: 215 x 330mm)                   */
         /* ================================================= */
+        @page { size: 215mm 330mm; margin: 0; }
         body {
-            font-family: 'Times New Roman', Times, serif;
-            background-color: #525659;
+            font-family: "Times New Roman", serif;
+            background: #525659;
             margin: 0; padding: 20px 0;
-            display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh;
-        }
-
-        .control-panel {
-            background-color: #fff; padding: 25px 30px; border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); margin-bottom: 25px;
-            width: 215mm; box-sizing: border-box;
-            border-top: 5px solid #007bff;
-            display: flex; flex-direction: column; gap: 20px;
-        }
-
-        .row-header { display: flex; gap: 15px; width: 100%; align-items: flex-end; border-bottom: 1px dashed #ddd; padding-bottom: 15px; }
-        .col-judul { flex: 5; }
-        .col-bulan { flex: 2; }
-        .col-tahun { flex: 1; min-width: 80px; }
-
-        .cp-grid-section { display: flex; gap: 20px; align-items: stretch; }
-        .cp-col { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-        .cp-col h4 { margin: 0 0 5px 0; font-size: 14px; font-family: Arial; color: #007bff; border-bottom: 2px solid #eee; padding-bottom: 3px; }
-
-        #container-shift-checkbox {
-            flex: 1; border: 1px solid #e0e0e0; background: #fafafa; border-radius: 4px; padding: 10px;
-            display: grid; grid-template-rows: repeat(5, auto); grid-auto-flow: column; gap: 8px 25px;
-            overflow-x: auto; overflow-y: hidden;
-        }
-        .cb-item { display: flex; align-items: center; gap: 5px; font-size: 13px; font-family: Arial; white-space: nowrap; cursor: pointer; }
-        
-        .btn-generate { 
-            background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 4px; 
-            cursor: pointer; font-weight: bold; width: 100%; font-size: 15px; text-transform: uppercase;
         }
 
         /* ================================================= */
-        /* 2. PAGE SETUP (F4: 215 x 330mm)                   */
+        /* 2. PANEL KONTROL (VERSI SIMPEL ANDA)              */
+        /* ================================================= */
+        .control-panel {
+            background: #fff; width: 215mm; margin: auto;
+            padding: 20px 25px; border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,.3); margin-bottom: 25px;
+        }
+        .control-panel h3 { margin: 0 0 10px; color: #007bff; font-family: Arial; }
+        .row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .control-group { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 12px; font-weight: bold; font-family: Arial, sans-serif; }
+        input { padding: 7px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 4px; }
+
+        #shift-container {
+            border: 1px solid #ddd; padding: 10px;
+            display: grid; grid-template-rows: repeat(3, auto);
+            grid-auto-flow: column; gap: 8px 25px; overflow-x: auto;
+            background: #fafafa; margin-bottom: 15px;
+        }
+        .cb-item { font-size: 13px; font-family: Arial; white-space: nowrap; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .btn-generate {
+            width: 100%; padding: 12px; font-weight: bold;
+            background: #28a745; color: #fff; border: none;
+            cursor: pointer; border-radius: 4px;
+        }
+
+        /* ================================================= */
+        /* 3. LAYOUT CETAK                                   */
         /* ================================================= */
         .page {
             width: 215mm; height: 330mm; background: #fff;
@@ -55,272 +51,228 @@
             page-break-after: always; position: relative;
             display: flex; flex-direction: column;
         }
-        @page { size: 215mm 330mm; margin: 0; }
-        @media print {
-            body { background: none; padding: 0; }
-            .control-panel, #loading, .page-label { display: none !important; }
-            .page { margin: 0; box-shadow: none; border: none; }
-        }
 
-        /* ================================================= */
-        /* 3. KOMPONEN BLANGKO (KOP & GRID)                  */
-        /* ================================================= */
-        /* Container Kop (Induk) */
-        .kop { 
-            display: flex; align-items: center; justify-content: center; 
-            position: relative; /* PENTING: Menjadi acuan posisi absolute anak */
-            height: 80px; 
-            overflow: hidden; /* Mencegah anak keluar container */
-        }
-
-        /* --- PERBAIKAN POSISI LOGO DI SINI --- */
-        .logo { 
-            position: absolute; 
-            left: 0; 
-            top: 50%;               /* Turun 50% dari atas */
-            transform: translateY(-50%); /* Tarik naik 50% dari tingginya sendiri agar pas di tengah */
-            width: 75px; 
-            z-index: 10;            /* Pastikan di atas elemen lain */
-            display: flex; align-items: center; /* Vertikal align untuk gambar di dalamnya */
-        }
-        /* Pastikan gambar tidak meledak */
-        .logo img { width: 100%; height: auto; max-height: 80px; }
-        /* ------------------------------------- */
-
-        .kop-text { text-align: center; flex: 1; padding: 0 75px; }
+        .kop { display: flex; align-items: center; justify-content: center; position: relative; height: 80px; }
+        .logo { position: absolute; left: 0; width: 70px; top: 50%; transform: translateY(-50%); }
+        .logo img { width: 100%; height: auto; }
+        .kop-text { text-align: center; padding: 0 75px; }
         .kop-text .t1 { font-size: 12pt; font-weight: bold; }
-        .kop-text .t2 { font-size: 22pt; font-weight: 900; margin: 2px 0; }
+        .kop-text .t2 { font-size: 22pt; font-weight: 900; line-height: 1; margin: 3px 0; }
         .kop-text .t3 { font-size: 12pt; font-weight: bold; }
         .double-line { border-top: 4px solid #000; border-bottom: 1px solid #000; height: 2px; margin: 5px 0 10px; }
 
-        .doc-title { text-align: center; font-weight: bold; font-size: 14pt; text-transform: uppercase; }
-        .doc-sub { text-align: center; font-size: 12pt; margin-bottom: 10px; font-weight: bold; }
-        .info-top { display: flex; justify-content: space-between; font-size: 11pt; font-weight: bold; border-bottom: 1px solid #000; padding-bottom: 5px; margin-bottom: 15px; }
+        .doc-title { text-align: center; font-weight: bold; font-size: 14pt; }
+        .doc-sub { text-align: center; font-size: 12pt; margin-bottom: 8px; }
+        .info { display: flex; justify-content: space-between; font-size: 11pt; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #000; padding-bottom: 5px; }
 
-        .grid-kartu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; flex: 1; align-content: start; }
-
-        /* KARTU DESIGN (FOTO 3x4) */
-        .kartu { border: 1px solid #000; padding: 8px; display: flex; align-items: flex-start; height: 4.2cm; box-sizing: border-box; }
-        .foto-box { 
-            width: 3cm; height: 4cm; border: 1px solid #000; flex-shrink: 0; margin-right: 12px;
-            background: #eee; display: flex; align-items: center; justify-content: center; overflow: hidden;
+        .grid-kartu {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; flex: 1; align-content: start;
         }
-        .foto-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* DESAIN KARTU */
+        .kartu {
+            border: 1px solid #000; padding: 8px;
+            display: flex; align-items: flex-start;
+            height: 4.2cm; box-sizing: border-box;
+            overflow: hidden; /* Mencegah konten keluar kartu */
+        }
         
-        .info-kartu { flex: 1; font-size: 9.5pt; line-height: 1.25; overflow: hidden; }
+        /* FIX FOTO: Menggunakan overflow hidden & object-fit */
+        .foto-box {
+            width: 3cm; height: 4cm; border: 1px solid #000;
+            margin-right: 10px; flex-shrink: 0;
+            background: #eee; display: flex; align-items: center; justify-content: center;
+            overflow: hidden; /* MENGUNCI GAMBAR DI DALAM BINGKAI */
+        }
+        .foto-box img { 
+            width: 100%; height: 100%; 
+            object-fit: cover; /* GAMBAR MENYESUAIKAN TANPA DISTORSI */
+        }
+
+        .info-kartu { flex: 1; font-size: 9.5pt; line-height: 1.2; }
         .row-data { display: flex; margin-bottom: 2px; }
         .label-data { width: 55px; font-weight: bold; flex-shrink: 0; }
-        .sep { width: 10px; text-align: center; }
-        .val { flex: 1; text-transform: uppercase; }
+        .sep { width: 8px; text-align: center; }
+        .val { flex: 1; }
 
-        .footer-page { position: absolute; bottom: 10mm; left: 15mm; right: 15mm; text-align: center; font-size: 9pt; font-style: italic; color: #666; }
-        .page-label { display: inline-block; background: #333; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-family: Arial; margin-top: 15px; }
+        .val-nama { font-weight: bold; text-transform: uppercase; font-size: 9pt; }
+
+        .footer {
+            position: absolute; bottom: 8mm; left: 15mm; right: 15mm;
+            text-align: center; font-size: 9pt; font-style: italic; color: #666;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .control-panel { display: none; }
+            .page { margin: 0; box-shadow: none; border: none; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="control-panel">
-        <div class="row-header">
-            <div class="col-judul">
-                <label>Judul Dokumen</label>
-                <input id="inp-judul" value="DATA PESERTA EBTAQ">
-            </div>
-            <div class="col-bulan">
-                <label>Bulan Hijriyah</label>
-                <input id="inp-bulan" placeholder="Misal: Rojab">
-            </div>
-            <div class="col-tahun">
-                <label>Tahun Hijriyah</label>
-                <input id="inp-tahun" style="text-align: center;">
-            </div>
+<div class="control-panel">
+    <h3>Panel Kontrol – DATA PESERTA</h3>
+    <div class="row">
+        <div class="control-group">
+            <label>Judul</label>
+            <input id="judul" value="DATA PESERTA EBTAQ">
         </div>
-
-        <div class="cp-grid-section">
-            <div class="cp-col">
-                <h4>1. Keterangan</h4>
-                <div style="padding: 10px; background: #f8f9fa; border: 1px solid #eee; font-size: 13px; line-height: 1.5;">
-                    Sistem akan otomatis mengatur:<br>
-                    • Hal 1: <b>$2 \times 5$ (10 Kartu)</b><br>
-                    • Hal 2+: <b>$2 \times 6$ (12 Kartu)</b><br>
-                    • Penomoran halaman global.
-                </div>
-            </div>
-            <div class="cp-col">
-                <h4>
-                    <span>2. Pilih Sesi (Gelombang-Shift)</span>
-                    <label style="margin:0; font-size:11px; cursor: pointer; color:#007bff;">
-                        <input type="checkbox" onchange="toggleAll(this)"> Pilih Semua
-                    </label>
-                </h4>
-                <div id="container-shift-checkbox">
-                    <div style="padding: 10px; color: #999; font-size: 12px; text-align: center;">Memuat Data...</div>
-                </div>
-            </div>
+        <div class="control-group">
+            <label>Bulan</label>
+            <input id="bulan" placeholder="Misal: Sya'ban">
         </div>
-        <button class="btn-generate" onclick="generate()">GENERATE DOKUMEN</button>
+        <div class="control-group">
+            <label>Tahun</label>
+            <input id="tahun" placeholder="1446 H">
+        </div>
     </div>
+    <label>Gelombang & Shift</label>
+    <div id="shift-container">Memuat data…</div>
+    <button class="btn-generate" onclick="generate()">GENERATE</button>
+</div>
 
-    <div id="loading" style="display:none; color: white; margin-top: 20px;"><h3>Sedang Memproses...</h3></div>
-    <div id="output"></div>
+<div id="output"></div>
 
-    <script>
-        const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
-        const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
-        const LOGO = "QIRAATI.png"; 
+<script>
+const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
+const LOGO = "QIRAATI.png";
+let grouped = {};
 
-        let grouped = {};
+// Helper 1: Title Case (Huruf depan besar)
+function toTitleCase(str) {
+    if (!str) return "-";
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+}
 
-        async function init() {
-            try {
-                const h = new Intl.DateTimeFormat('id-ID-u-ca-islamic', { year: 'numeric' }).format(new Date());
-                document.getElementById('inp-tahun').value = h.match(/\d+/)[0] + " H";
-            } catch(e) {}
+// Helper 2: Format Tanggal (dd Mmm yyyy)
+function formatTanggal(tglStr) {
+    if (!tglStr) return "";
+    const blnIndo = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
+    
+    // Mencoba parsing tanggal (asumsi format umum: DD/MM/YYYY atau YYYY-MM-DD)
+    const d = new Date(tglStr);
+    if (!isNaN(d.getTime())) {
+        return `${String(d.getDate()).padStart(2, '0')} ${blnIndo[d.getMonth()]} ${d.getFullYear()}`;
+    }
+    return tglStr; // Jika gagal parsing, kembalikan aslinya
+}
 
-            try {
-                const res = await fetch(SHEET_URL);
-                const txt = await res.text();
-                processData(txt);
-            } catch (err) { alert("Gagal Load: " + err); }
-        }
+fetch(SHEET_URL).then(r => r.text()).then(csv => {
+    const rows = csv.trim().split('\n');
+    const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim().toUpperCase());
+    
+    for (let i = 1; i < rows.length; i++) {
+        const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+        let p = {};
+        cols.forEach((v, j) => p[headers[j]] = v.replace(/"/g, '').trim());
+        
+        const key = `${p['GELOMBANG'] || '-'}-${p['SHIFT'] || '-'}`;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(p);
+    }
 
-        function processData(csv) {
-            const rows = csv.trim().split('\n');
-            const headers = rows[0].split(',').map(h => h.replace(/"/g, '').trim().toUpperCase());
-            
-            for (let i = 1; i < rows.length; i++) {
-                const cols = rows[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
-                let p = {};
-                cols.forEach((v, j) => p[headers[j]] = v.replace(/"/g, '').trim());
+    const c = document.getElementById('shift-container');
+    c.innerHTML = '';
+    Object.keys(grouped).sort().forEach(k => {
+        const l = document.createElement('label');
+        l.className = 'cb-item';
+        l.innerHTML = `<input type="checkbox" value="${k}"> Gel ${k.replace('-', ' SFT ')} (${grouped[k].length})`;
+        c.appendChild(l);
+    });
+});
 
-                p.NAMA = p['NAMA LENGKAP (SESUAI AKTA)'] || '';
-                p.LEMBAGA = p['ASAL LEMBAGA / TPQ'] || '-';
-                p.AYAH = p['NAMA AYAH'] || '-';
-                p.IBU = p['NAMA IBU'] || '-';
-                p.GEL = p['GELOMBANG'] || '-';
-                p.SFT = p['SHIFT'] || '-';
-                p.FOTO = p['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
-                p.INT_NO = parseInt(p['NOMOR']) || i;
+function generate() {
+    const out = document.getElementById('output');
+    const judul = document.getElementById('judul').value;
+    const bulan = document.getElementById('bulan').value;
+    const tahun = document.getElementById('tahun').value;
+    out.innerHTML = '';
 
-                const key = `${p.GEL}-${p.SFT}`;
-                if (!grouped[key]) grouped[key] = [];
-                grouped[key].push(p);
+    document.querySelectorAll('#shift-container input:checked').forEach(cb => {
+        const data = grouped[cb.value];
+        const [gel, sft] = cb.value.split('-');
+        let idx = 0;
+
+        while (idx < data.length) {
+            const isFirst = (idx === 0);
+            const limit = isFirst ? 10 : 12;
+
+            const page = document.createElement('div');
+            page.className = 'page';
+
+            let headerHTML = "";
+            if (isFirst) {
+                headerHTML = `
+                <div class="kop">
+                    <div class="logo"><img src="${LOGO}" onerror="this.style.display='none'"></div>
+                    <div class="kop-text">
+                        <div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div>
+                        <div class="t2">METODE QIRAATI</div>
+                        <div class="t3">CABANG DEMAK</div>
+                    </div>
+                </div>
+                <div class="double-line"></div>
+                <div class="doc-title">${judul}</div>
+                <div class="doc-sub">PERIODE ${bulan} ${tahun}</div>
+                <div class="info">
+                    <div>GELOMBANG: ${gel}</div>
+                    <div>SHIFT: ${sft}</div>
+                </div>`;
             }
 
-            const container = document.getElementById('container-shift-checkbox');
-            container.innerHTML = '';
-            Object.keys(grouped).sort().forEach(k => {
-                const div = document.createElement('label');
-                div.className = 'cb-item';
-                div.innerHTML = `<input type="checkbox" name="chk-shift" value="${k}"> Gel ${k.replace('-', ' SFT ')} (${grouped[k].length})`;
-                container.appendChild(div);
-            });
+            const grid = document.createElement('div');
+            grid.className = 'grid-kartu';
+            grid.style.gridTemplateRows = isFirst ? "repeat(5, 1fr)" : "repeat(6, 1fr)";
+
+            for (let i = 0; i < limit && idx < data.length; i++, idx++) {
+                grid.appendChild(createCard(data[idx]));
+            }
+
+            page.innerHTML = headerHTML;
+            page.appendChild(grid);
+            page.innerHTML += `<div class="footer">Data EBTAQ | Gel ${gel} | SFT ${sft} | Hal. ${Math.ceil(idx/12)}</div>`;
+            out.appendChild(page);
         }
+    });
+}
 
-        function toggleAll(src) {
-            document.getElementsByName('chk-shift').forEach(cb => cb.checked = src.checked);
-        }
+function createCard(d) {
+    const card = document.createElement('div');
+    card.className = 'kartu';
+    
+    const nama = d['NAMA LENGKAP (SESUAI AKTA)'] || '-';
+    const lembaga = toTitleCase(d['ASAL LEMBAGA / TPQ'] || d['NAMA LEMBAGA']);
+    const ayah = toTitleCase(d['NAMA AYAH']);
+    const ibu = toTitleCase(d['NAMA IBU']);
+    
+    // TTL dengan format tanggal baru
+    const tempat = toTitleCase(d['TEMPAT LAHIR']);
+    const tanggal = formatTanggal(d['TANGGAL LAHIR']);
+    const ttl = `${tempat}, ${tanggal}`;
+    
+    const rawFoto = d['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
+    const idDrive = rawFoto.includes('id=') ? rawFoto.match(/id=([a-zA-Z0-9_-]+)/)[1] : null;
+    const fotoSrc = idDrive ? `https://lh3.googleusercontent.com/d/${idDrive}` : '';
 
-        function getDirectUrl(url) {
-            if (!url || !url.includes('id=')) return url;
-            const id = url.match(/id=([a-zA-Z0-9_-]+)/);
-            return id ? `https://lh3.googleusercontent.com/d/${id[1]}` : url;
-        }
+    card.innerHTML = `
+        <div class="foto-box">
+            ${fotoSrc ? `<img src="${fotoSrc}">` : `<small style="color:#999">FOTO 3x4</small>`}
+        </div>
+        <div class="info-kartu">
+            <div class="row-data"><span class="label-data">ID</span><span class="sep">:</span><span class="val">${d['ID PENDAFTARAN'] || d['NOMOR'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val-nama">${nama}</span></div>
+            <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val">${lembaga}</span></div>
+            <div class="row-data"><span class="label-data">TTL</span><span class="sep">:</span><span class="val">${ttl}</span></div>
+            <div class="row-data"><span class="label-data">JK</span><span class="sep">:</span><span class="val">${d['JENIS KELAMIN'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">BIN</span><span class="sep">:</span><span class="val">${ayah}</span></div>
+            <div class="row-data"><span class="label-data">BINTI</span><span class="sep">:</span><span class="val">${ibu}</span></div>
+        </div>`;
+    return card;
+}
+</script>
 
-        function generate() {
-            const out = document.getElementById('output');
-            const judul = document.getElementById('inp-judul').value;
-            const bulan = document.getElementById('inp-bulan').value;
-            const tahun = document.getElementById('inp-tahun').value;
-            out.innerHTML = '';
-
-            const selected = document.querySelectorAll('input[name="chk-shift"]:checked');
-            if (selected.length === 0) return alert("Pilih Sesi!");
-
-            // Pre-calculate Global Total Pages
-            let grandTotal = 0;
-            selected.forEach(cb => {
-                const count = grouped[cb.value].length;
-                grandTotal += 1; // Halaman 1 (10 kartu)
-                if (count > 10) grandTotal += Math.ceil((count - 10) / 12);
-            });
-
-            let globalPage = 1;
-
-            selected.forEach(cb => {
-                const data = grouped[cb.value].sort((a,b) => a.INT_NO - b.INT_NO);
-                const [gel, sft] = cb.value.split('-');
-                let idx = 0;
-
-                while (idx < data.length) {
-                    const isFirst = (idx === 0);
-                    const limit = isFirst ? 10 : 12;
-
-                    const page = document.createElement('div');
-                    page.className = 'page';
-
-                    let header = '';
-                    if (isFirst) {
-                        header = `
-                        <div class="kop">
-                            <div class="logo"><img src="${LOGO}" onerror="this.style.display='none'"></div>
-                            <div class="kop-text">
-                                <div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div>
-                                <div class="t2">METODE QIRAATI</div>
-                                <div class="t3">CABANG DEMAK</div>
-                            </div>
-                        </div>
-                        <div class="double-line"></div>
-                        <div class="doc-title">${judul}</div>
-                        <div class="doc-sub">PERIODE ${bulan} ${tahun}</div>
-                        <div class="info-top">
-                            <div>GELOMBANG: ${gel}</div>
-                            <div>SHIFT: ${sft}</div>
-                        </div>`;
-                    }
-
-                    const grid = document.createElement('div');
-                    grid.className = 'grid-kartu';
-
-                    for (let i = 0; i < limit && idx < data.length; i++, idx++) {
-                        grid.appendChild(createCard(data[idx]));
-                    }
-
-                    const pageLabel = document.createElement('div');
-                    pageLabel.className = 'page-label';
-                    pageLabel.innerHTML = `SESI: GEL ${gel} SFT ${sft} | HALAMAN ${globalPage} DARI ${grandTotal}`;
-
-                    page.innerHTML = header;
-                    page.appendChild(grid);
-                    page.innerHTML += `<div class="footer-page">${judul} | ${bulan} ${tahun} | Hal. ${globalPage} dari ${grandTotal}</div>`;
-                    
-                    out.appendChild(pageLabel);
-                    out.appendChild(page);
-                    globalPage++;
-                }
-            });
-        }
-
-        function createCard(d) {
-            const c = document.createElement('div');
-            c.className = 'kartu';
-            const fUrl = getDirectUrl(d.FOTO);
-            const fotoHTML = fUrl.startsWith('http') ? `<img src="${fUrl}">` : `<small style="color:#999">FOTO 3x4</small>`;
-
-            c.innerHTML = `
-                <div class="foto-box">${fotoHTML}</div>
-                <div class="info-kartu">
-                    <div class="row-data"><span class="label-data">ID</span><span class="sep">:</span><span class="val">${d['ID PENDAFTARAN'] || '-'}</span></div>
-                    <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val"><b>${d.NAMA}</b></span></div>
-                    <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val">${d.LEMBAGA}</span></div>
-                    <div class="row-data"><span class="label-data">TTL</span><span class="sep">:</span><span class="val">${d['TEMPAT LAHIR']}, ${d['TANGGAL LAHIR']}</span></div>
-                    <div class="row-data"><span class="label-data">JK</span><span class="sep">:</span><span class="val">${d['JENIS KELAMIN']}</span></div>
-                    <div class="row-data"><span class="label-data">BIN</span><span class="sep">:</span><span class="val">${d.AYAH}</span></div>
-                    <div class="row-data"><span class="label-data">BINTI</span><span class="sep">:</span><span class="val">${d.IBU}</span></div>
-                </div>`;
-            return c;
-        }
-
-        init();
-    </script>
 </body>
 </html>
