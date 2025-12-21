@@ -243,7 +243,7 @@ function generate() {
 function createCard(d) {
     const c = document.createElement('div');
     c.className = 'kartu';
-    const rawF = d['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
+    const rawF = d['Kirim Pas Foto Ukuran PostCard'] || '';
     const idF = rawF.includes('id=') ? rawF.match(/id=([a-zA-Z0-9_-]+)/)[1] : null;
     const fSrc = idF ? `https://lh3.googleusercontent.com/d/$${idF}` : '';
 
