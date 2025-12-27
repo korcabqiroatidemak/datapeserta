@@ -138,7 +138,7 @@
 <script>
 const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
-const LOGO = "QIRAATI.png";
+const LOGO = ".png";
 let grouped = {};
 
 window.onload = async () => {
@@ -239,7 +239,7 @@ function generate() {
 
             let header = "";
             if (isFirst) {
-                header = `<div class="kop"><div class="logo"><img src="${LOGO}"></div><div class="kop-text"><div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div><div class="t2">METODE QIRAATI</div><div class="t3">CABANG DEMAK</div></div></div><div class="double-line"></div><div class="doc-title">${judul}</div><div class="doc-sub">Periode ${bulan} ${tahun}</div><div class="info-top"><div>GELOMBANG: ${gel}</div><div>SHIFT: ${sft}</div></div>`;
+                header = `<div class="kop"><div class="logo"><img src="${LOGO}"></div><div class="kop-text"><div class="t1">KOORDINATOR PENDIDIKAN AL-QUR'AN</div><div class="t2">METODE QIROATI</div><div class="t3">CABANG DEMAK</div></div></div><div class="double-line"></div><div class="doc-title">${judul}</div><div class="doc-sub">Periode ${bulan} ${tahun}</div><div class="info-top"><div>GELOMBANG: ${gel}</div><div>SHIFT: ${sft}</div></div>`;
             }
 
             const grid = document.createElement('div');
