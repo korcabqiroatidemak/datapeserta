@@ -136,8 +136,10 @@
 <div id="output"></div>
 
 <script>
-const SHEET_ID = "1eIcvIgCLWG3F9jQdsw5XN9llOsK2PoYWKUg1qaQJyyA";
-const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Biodata Cek`;
+// UPDATE: Menggunakan ID dan GID baru dari sheet BIO
+const SHEET_ID = "180oIFF3WRaijxLn_LZiu12f0m5mTxZ8DY3w4t1Jd5FY";
+const GID_BIO = "644681055";
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&gid=${GID_BIO}`;
 const LOGO = "QIRAATI.png";
 let grouped = {};
 
@@ -167,30 +169,25 @@ function toTitleCase(str) {
     return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
-// FUNGSI CERDAS MEMBACA TANGGAL (FORMAT INDONESIA DD/MM/YYYY)
 function formatTanggal(str) {
     if (!str) return "";
     const blnArr = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Des"];
     
-    // Cek pemisah / atau -
     let separator = str.includes('/') ? '/' : (str.includes('-') ? '-' : null);
     
     if (separator) {
         const parts = str.split(separator);
         if (parts.length === 3) {
-            // Kita asumsikan urutan Indonesia: 0=Tgl, 1=Bln, 2=Thn
             let tgl = parts[0].trim().padStart(2, '0');
             let blnIdx = parseInt(parts[1].trim()) - 1;
             let thn = parts[2].trim();
             
-            // Validasi bulan
             if (blnIdx >= 0 && blnIdx <= 11) {
                 return `${tgl} ${blnArr[blnIdx]} ${thn}`;
             }
         }
     }
 
-    // Jika gagal dengan cara manual, gunakan cara standar browser
     const d = new Date(str);
     return !isNaN(d.getTime()) ? `${String(d.getDate()).padStart(2, '0')} ${blnArr[d.getMonth()]} ${d.getFullYear()}` : str;
 }
@@ -262,13 +259,14 @@ function createCard(d) {
     const c = document.createElement('div');
     c.className = 'kartu';
     
-    const rawF = d['KIRIM PAS FOTO UKURAN POSTCARD'] || '';
-    const matchId = rawF.match(/id=([a-zA-Z0-9_-]+)/);
+    // UPDATE: Penyesuaian key data ke kolom baru BIO
+    const rawF = d['FOTO'] || '';
+    const matchId = rawF.match(/id=([a-zA-Z0-9_-]+)/) || rawF.match(/\/d\/([a-zA-Z0-9_-]+)/);
     
-    // Perbaikan link foto dengan template literal yang benar
+    // UPDATE: Perbaikan template literal URL foto Drive
     let fSrc = "";
     if (matchId && matchId[1]) {
-        fSrc = `https://lh3.googleusercontent.com/d/${matchId[1]}`;
+        fSrc = `https://drive.google.com/thumbnail?id=${matchId[1]}&sz=w400`;
     }
 
     c.innerHTML = `
@@ -276,13 +274,13 @@ function createCard(d) {
             ${fSrc ? `<img src="${fSrc}" onerror="this.style.display='none'; this.parentNode.innerHTML='<small style=\'color:#999\'>NO FOTO</small>'">` : `<small style="color:#999">3x4</small>`}
         </div>
         <div class="info-kartu">
-            <div class="row-data"><span class="label-data">NOMOR</span><span class="sep">:</span><span class="val">${d['NOMOR'] || '-'}</span></div>
-            <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val-nama">${d['NAMA LENGKAP (SESUAI AKTA)'] || '-'}</span></div>
-            <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val val-lembaga">${d['ASAL LEMBAGA / TPQ'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">NOMOR</span><span class="sep">:</span><span class="val">${d['NO.'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">NAMA</span><span class="sep">:</span><span class="val-nama">${d['NAMA LENGKAP'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">LEMB.</span><span class="sep">:</span><span class="val val-lembaga">${d['ASAL LEMBAGA'] || '-'}</span></div>
             <div class="row-data"><span class="label-data">TTL</span><span class="sep">:</span><span class="val">${toTitleCase(d['TEMPAT LAHIR'])}, ${formatTanggal(d['TANGGAL LAHIR'])}</span></div>
-            <div class="row-data"><span class="label-data">JK</span><span class="sep">:</span><span class="val">${d['JENIS KELAMIN'] || '-'}</span></div>
-            <div class="row-data"><span class="label-data">BIN</span><span class="sep">:</span><span class="val">${toTitleCase(d['NAMA AYAH'])}</span></div>
-            <div class="row-data"><span class="label-data">BINTI</span><span class="sep">:</span><span class="val">${toTitleCase(d['NAMA IBU'])}</span></div>
+            <div class="row-data"><span class="label-data">JK</span><span class="sep">:</span><span class="val">${d['L/P'] || '-'}</span></div>
+            <div class="row-data"><span class="label-data">BIN</span><span class="sep">:</span><span class="val">${toTitleCase(d['BIN'])}</span></div>
+            <div class="row-data"><span class="label-data">BINTI</span><span class="sep">:</span><span class="val">${toTitleCase(d['BINTI'])}</span></div>
         </div>`;
     return c;
 }
